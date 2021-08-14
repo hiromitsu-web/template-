@@ -1,1 +1,156 @@
 
+HTML(ボタンとドロワーメニュー)
+
+        <button class="drawer-icon js-drawer for-drawer" type="button" data-target="for-drawer">
+            <span class="drawer-bars">
+                <span class="drawer-bar"></span>
+                <span class="drawer-bar"></span>
+                <span class="drawer-bar"></span>
+            </span>
+        </button><!-- /drawer-icon -->
+        <div class="drawer-content-cover for-drawer js-navLink">
+            <ul>
+                <li><a href="#top" class="js-navLink" >TOP</a></li>
+                <li><a href="#about" class="js-navLink">ABOUT</a></li>
+                <li><a href="#service"class="js-navLink">SERVICE</a></li>
+                <li><a href="#works"class="js-navLink">WORKS</a></li>
+                <li><a href="#news"class="js-navLink">NEWS</a></li>
+                <li><a href="#contact"class="js-navLink">CONTACT</a></li>
+            </ul>
+        </div><!-- /drawer-content -->
+
+       
+
+
+SASS
+
+// -----
+// ドロワー
+// -----
+.drawer-icon {
+    display: none;
+    position: fixed;
+    right: 16px;
+    top: 20px;
+    z-index: map-get($layer, "drawer") + 1;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.5s ease 0s;
+    background: transparent;
+    box-shadow: none;
+    border: none;
+    padding: 0;
+    //クリックしたときの枠線
+    &:focus{
+        outline: none;
+    }
+    @include mq(sp) {
+        display: block;
+    }
+}
+
+.drawer-bars {
+    display: inline-block;
+    width: $drawer-bar-width;
+    height: $drawer-bar-height + ($drawer-bar-space + $drawer-bar-height) * 2;
+    position: relative;
+    vertical-align: bottom;
+}
+.drawer-bar {
+    position: absolute;
+    right: 0;
+    left: 0;
+    display: block;
+    background: $drawer-bar-color;
+    width: 100%;
+    height: $drawer-bar-height;
+    border-radius: 0;
+    transition: all 0.5s linear 0s;
+    &:nth-of-type(1) {
+        top: 0;
+    }
+    &:nth-of-type(2) {
+        top: $drawer-bar-space + $drawer-bar-height;
+    }
+    &:nth-of-type(3) {
+        top: ($drawer-bar-space + $drawer-bar-height) * 2;
+    }
+
+    //ハンバーガーアイコンの変形
+    .is-checked & {
+        &:nth-of-type(1) {
+            top: 10px;
+            transform: rotate(-45deg);
+        }
+        &:nth-of-type(2) {
+            background: transparent;
+        }
+        &:nth-of-type(3) {
+            top: 10px;
+            transform: rotate(45deg);
+        }
+    }
+}
+
+.drawer-content-cover {
+    position: fixed;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateX(0);
+    top: 0;
+    left: 0;
+    bottom: auto;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    transition: all 0.5s linear 0s;
+    background: $drawer-shadow;
+    z-index: map-get($layer, "drawer");
+    padding-top: 96px;
+    &.is-checked {
+        visibility: visible;
+        opacity: 0.8;
+    }
+    ul {
+        margin: 0 auto;
+        width: 100%;
+        li {
+            text-align: center;
+            a {
+                font-size: $drawer-fz;
+                display: inline-block;
+                padding: 30px 0 30px 0;
+                color: $drawer-color;
+            }
+        }
+    }
+
+}
+
+jQuery
+
+<script>
+    // ドロワー
+    //ハンバーガーアイコンをクリックする動作。
+    // .js-drawerをクリックすると、"date-target"がついているクラスに、"is-checked"がつく。
+    jQuery(".js-drawer").on("click", function(e) {
+        e.preventDefault();
+        //targetClassは、.js-drawerのdata-targetの値を取得する。つまり、.for-drawer
+        let targetClass = jQuery(this).attr("data-target");
+        //クリックするたびにis-checkedクラスがつけたり外れたりする
+        //アイコンの変形、ドロワーメニューの出現
+        jQuery("." + targetClass).toggleClass("is-checked");
+        return false;
+    });
+    //ドロワーを閉じる
+    //ナビゲーションメニューをクリックすると
+    jQuery( ".js-navLink").on( "click", function(e) {
+        e.preventDefault();
+        //targetClassは、.js-drawerのdata-targetの値を取得する。つまり、.for-drawer
+        let targetClass = jQuery(".js-drawer").attr("data-target");
+        jQuery("." + targetClass).removeClass( "is-checked" );
+        return false;
+    });
+
+</script>
+
